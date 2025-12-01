@@ -1,0 +1,131 @@
+<prompt>
+  <project>
+    <name>Gym Management System Backend</name>
+    <framework>Flask</framework>
+    <database>PostgreSQL + SQLAlchemy</database>
+
+    <database_connectivity>
+      <style>Use simple SQLAlchemy setup exactly like the following:</style>
+      <code>
+        from sqlalchemy import create_engine
+        from sqlalchemy.orm import sessionmaker, declarative_base
+
+        from app.core.config import DATABASE_URL
+
+        engine = create_engine(DATABASE_URL)
+        SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+        Base = declarative_base()
+
+        # Inject session dependency into routes
+        def get_db():
+            db = SessionLocal()
+            try:
+                yield db
+            finally:
+                db.close()
+      </code>
+      <instructions>
+        Use this SAME EXACT structure in Flask:
+        - No async
+        - No advanced connection pools
+        - No external ORMs
+        - Only SQLAlchemy core ORM with sessionmaker
+        - Each repository receives the DB session
+      </instructions>
+    </database_connectivity>
+
+    <architecture>
+      <pattern>Modular Layered Architecture</pattern>
+      <layers>
+        <layer>Main App (only initializes and registers blueprints)</layer>
+        <layer>Routers (handle API endpoints, use schemas for validation)</layer>
+        <layer>Service Layer (business logic)</layer>
+        <layer>Repository Layer (SQLAlchemy CRUD queries)</layer>
+        <layer>Models Layer (SQLAlchemy models matching DB fields exactly)</layer>
+        <layer>Schemas Layer (Pydantic or Marshmallow request/response DTOs)</layer>
+        <layer>Database Folder (engine, session, Base)</layer>
+        <layer>Config Layer (.env settings for DATABASE_URL)</layer>
+      </layers>
+    </architecture>
+
+    <folder_structure>
+      <root>src/</root>
+      <tree>
+        <folder>app/</folder>
+        <folder>app/routers/</folder>
+        <folder>app/services/</folder>
+        <folder>app/repositories/</folder>
+        <folder>app/models/</folder>
+        <folder>app/schemas/</folder>
+        <folder>app/database/</folder>
+        <folder>app/core/</folder>
+        <folder>app/utils/</folder>
+      </tree>
+      <main_file>main.py (initialize app, register blueprints, load database)</main_file>
+    </folder_structure>
+
+    <database_models>
+      <description>Create SQLAlchemy models with EXACT field names from database:</description>
+      <tables>
+
+        <table name="members">
+          <field name="id" type="UUID" />
+          <field name="full_name" type="str" />
+          <field name="phone" type="str" nullable="true" />
+          <field name="email" type="str" nullable="true" />
+          <field name="gender" type="str" nullable="true" />
+          <field name="address" type="str" nullable="true" />
+          <field name="join_date" type="date" />
+          <field name="is_active" type="bool" />
+        </table>
+
+        <table name="memberships">
+          <field name="id" type="UUID" />
+          <field name="name" type="str" />
+          <field name="duration_days" type="int" />
+          <field name="price" type="float" />
+        </table>
+
+        <table name="member_subscriptions">
+          <field name="id" type="UUID" />
+          <field name="member_id" type="UUID" />
+          <field name="membership_id" type="UUID" />
+          <field name="start_date" type="date" />
+          <field name="end_date" type="date" />
+          <field name="status" type="str" />
+        </table>
+
+        <table name="payments">
+          <field name="id" type="UUID" />
+          <field name="member_id" type="UUID" />
+          <field name="amount" type="float" />
+          <field name="payment_date" type="date" />
+          <field name="method" type="str" />
+        </table>
+
+      </tables>
+    </database_models>
+
+    <requirements>
+      <rule>Routers must NOT contain business logic.</rule>
+      <rule>Service layer must NOT contain SQL.</rule>
+      <rule>Repository layer must contain all SQLAlchemy CRUD operations.</rule>
+      <rule>Schemas must handle validation and serialization.</rule>
+      <rule>Models must strictly match the DB schema.</rule>
+    </requirements>
+
+    <output>
+      <deliverables>
+        <item>Full folder structure</item>
+        <item>Models</item>
+        <item>Repositories (SQLAlchemy)</item>
+        <item>Services</item>
+        <item>Routers using Blueprints</item>
+        <item>Schemas (Pydantic or Marshmallow)</item>
+        <item>Database connection module using your SQLAlchemy style</item>
+        <item>config.py with DATABASE_URL</item>
+        <item>Sample CRUD implementation for all layers</item>
+      </deliverables>
+    </output>
+  </project>
+</prompt>
