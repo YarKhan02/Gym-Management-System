@@ -86,7 +86,8 @@ const Subscriptions = () => {
               const variant = 
                 sub.status === 'active' ? 'default' :
                 sub.status === 'expired' ? 'destructive' : 'secondary';
-              return <Badge variant={variant}>{sub.status}</Badge>;
+              const displayStatus = sub.status.charAt(0).toUpperCase() + sub.status.slice(1);
+              return <Badge variant={variant}>{displayStatus}</Badge>;
             },
           },
         ]}

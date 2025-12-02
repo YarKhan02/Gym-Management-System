@@ -8,13 +8,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 interface PaymentFormProps {
   memberId?: string;
   defaultAmount?: number;
+  subscriptionId?: string | null;
   onSubmit: (data: Omit<Payment, 'id'>) => void;
   onCancel: () => void;
 }
 
-export const PaymentForm = ({ memberId, defaultAmount, onSubmit, onCancel }: PaymentFormProps) => {
+export const PaymentForm = ({ memberId, defaultAmount, subscriptionId, onSubmit, onCancel }: PaymentFormProps) => {
   const [formData, setFormData] = useState({
     member_id: memberId || '',
+    subscription_id: subscriptionId || null,
     amount: defaultAmount || 0,
     payment_date: new Date().toISOString().split('T')[0],
     method: 'Cash',

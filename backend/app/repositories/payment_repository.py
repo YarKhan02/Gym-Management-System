@@ -20,6 +20,9 @@ class PaymentRepository:
     def get_by_member_id(self, db: Session, member_id: UUID) -> List[Payment]:
         return db.query(Payment).filter(Payment.member_id == member_id).all()
 
+    def get_by_subscription_id(self, db: Session, subscription_id: UUID) -> List[Payment]:
+        return db.query(Payment).filter(Payment.subscription_id == subscription_id).all()
+
     def get_all(self, db: Session, skip: int = 0, limit: int = 100) -> List[Payment]:
         return db.query(Payment).offset(skip).limit(limit).all()
 

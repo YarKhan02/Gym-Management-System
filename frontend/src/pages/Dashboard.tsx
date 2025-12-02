@@ -1,44 +1,20 @@
-import { useMembers } from '@/hooks/useMembers';
-import { useSubscriptions } from '@/hooks/useSubscriptions';
-import { usePayments } from '@/hooks/usePayments';
-import { useMemberships } from '@/hooks/useMemberships';
+import { useDashboard } from '@/hooks/useDashboard';
 import { StatCard } from '@/components/ui/StatCard';
 import { DataTable } from '@/components/ui/DataTable';
 import { Users, UserCheck, UserX, Wallet, AlertCircle } from 'lucide-react';
-import { calculateTotalRevenue, getActiveMembers, getExpiredMembers } from '@/utils/calculations';
-import { formatDate, isExpiringSoon, getDaysUntilExpiry } from '@/utils/dateHelpers';
+import { formatDate } from '@/utils/dateHelpers';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const { data: members = [] } = useMembers();
-  const { data: subscriptions = [] } = useSubscriptions();
-  const { data: payments = [] } = usePayments();
-  const { data: memberships = [] } = useMemberships();
+  const { data: dashboardData, isLoading } = useDashboard();
 
-  const activeMembers = getActiveMembers(members, subscriptions);
-  const expiredMembers = getExpiredMembers(members, subscriptions);
-  const monthRevenue = calculateTotalRevenue(payments);
+  if (isLoading || !dashboardData) {
+    return <div className="flex items-center justify-center h-64">Loading...</div>;
+  }
 
-  const expiringSubscriptions = subscriptions
-    .filter(sub => sub.status === 'active' && isExpiringSoon(sub.end_date, 7))
-    .map(sub => {
-      const member = members.find(m => m.id === sub.member_id);
-      const membership = memberships.find(m => m.id === sub.membership_id);
-      return { ...sub, member, membership };
-    })
-    .filter(sub => sub.member);
-
-  const duePayments = expiredMembers.map(member => {
-    const expiredSub = subscriptions.find(s => s.member_id === member.id && s.status === 'active');
-    return { member, expiredSub };
-  });
-
-  const recentPayments = payments.slice(0, 5).map(payment => {
-    const member = members.find(m => m.id === payment.member_id);
-    return { ...payment, member };
-  });
+  const { stats, expiring_subscriptions, recent_payments } = dashboardData;
 
   return (
     <div className="space-y-6">
@@ -50,25 +26,25 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           title="Total Members"
-          value={members.length}
+          value={stats.total_members}
           icon={Users}
           description="All registered members"
         />
         <StatCard
           title="Active Members"
-          value={activeMembers.length}
+          value={stats.active_members}
           icon={UserCheck}
           description="Members with active subscriptions"
         />
         <StatCard
           title="Expired"
-          value={expiredMembers.length}
+          value={stats.expired_members}
           icon={UserX}
           description="Subscriptions expired"
         />
         <StatCard
           title="This Month Revenue"
-          value={`$${monthRevenue.toFixed(2)}`}
+          value={`PKR ${stats.month_revenue.toFixed(2)}`}
           icon={Wallet}
           description="Total payments received"
         />
@@ -81,17 +57,17 @@ const Dashboard = () => {
             Expiring Soon (Next 7 Days)
           </h2>
           <DataTable
-            data={expiringSubscriptions}
+            data={expiring_subscriptions}
             columns={[
               {
                 key: 'member',
                 label: 'Member',
-                render: (item) => item.member?.full_name || 'N/A',
+                render: (item) => item.member_name,
               },
               {
                 key: 'membership',
                 label: 'Plan',
-                render: (item) => item.membership?.name || 'N/A',
+                render: (item) => item.membership_name,
               },
               {
                 key: 'end_date',
@@ -100,7 +76,7 @@ const Dashboard = () => {
                   <div className="flex items-center gap-2">
                     <span>{formatDate(item.end_date)}</span>
                     <Badge variant="destructive">
-                      {getDaysUntilExpiry(item.end_date)}d left
+                      {item.days_until_expiry}d left
                     </Badge>
                   </div>
                 ),
@@ -117,17 +93,17 @@ const Dashboard = () => {
             Recent Payments
           </h2>
           <DataTable
-            data={recentPayments}
+            data={recent_payments}
             columns={[
               {
                 key: 'member',
                 label: 'Member',
-                render: (item) => item.member?.full_name || 'N/A',
+                render: (item) => item.member_name,
               },
               {
                 key: 'amount',
                 label: 'Amount',
-                render: (item) => `$${item.amount.toFixed(2)}`,
+                render: (item) => `PKR ${item.amount.toFixed(2)}`,
               },
               {
                 key: 'payment_date',

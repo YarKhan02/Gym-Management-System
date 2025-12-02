@@ -2,8 +2,8 @@ from flask import Blueprint, request, jsonify
 from uuid import UUID
 
 from app.database.database import get_db
-from app.services.member_subscription_service import MemberSubscriptionService
-from app.schemas.member_subscription import MemberSubscriptionCreate, MemberSubscriptionResponse
+from app.services.subscription_service import MemberSubscriptionService
+from app.schemas.subscription import MemberSubscriptionCreate, MemberSubscriptionResponse
 
 subscription_router = Blueprint("subscriptions", __name__, url_prefix="/api/subscriptions")
 subscription_service = MemberSubscriptionService()

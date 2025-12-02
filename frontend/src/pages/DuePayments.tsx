@@ -16,10 +16,10 @@ const DuePayments = () => {
   const createPayment = useCreatePayment();
 
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
-  const [selectedMember, setSelectedMember] = useState<{ id: string; amount: number } | null>(null);
+  const [selectedMember, setSelectedMember] = useState<{ id: string; amount: number; subscriptionId: string } | null>(null);
 
-  const handleMarkAsPaid = (memberId: string, amount: number) => {
-    setSelectedMember({ id: memberId, amount });
+  const handleMarkAsPaid = (memberId: string, amount: number, subscriptionId: string) => {
+    setSelectedMember({ id: memberId, amount, subscriptionId });
     setIsPaymentModalOpen(true);
   };
 
@@ -109,7 +109,7 @@ const DuePayments = () => {
                   <Button
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleMarkAsPaid(item.member_id, item.membership_price);
+                      handleMarkAsPaid(item.member_id, item.membership_price, item.subscription_id);
                     }}
                     size="sm"
                     className="gap-2"
@@ -137,6 +137,7 @@ const DuePayments = () => {
         >
           <PaymentForm
             memberId={selectedMember.id}
+            subscriptionId={selectedMember.subscriptionId}
             defaultAmount={selectedMember.amount}
             onSubmit={handleCreatePayment}
             onCancel={() => {

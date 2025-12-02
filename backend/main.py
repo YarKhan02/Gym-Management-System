@@ -6,6 +6,7 @@ from app.routers.member_router import member_router
 from app.routers.membership_router import membership_router
 from app.routers.subscription_router import subscription_router
 from app.routers.payment_router import payment_router
+from app.routers.dashboard_router import dashboard_router
 
 
 def create_app():
@@ -20,6 +21,7 @@ def create_app():
     app.register_blueprint(membership_router)
     app.register_blueprint(subscription_router)
     app.register_blueprint(payment_router)
+    app.register_blueprint(dashboard_router)
 
     @app.route("/")
     def health_check():

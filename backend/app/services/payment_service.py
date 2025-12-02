@@ -3,7 +3,7 @@ from uuid import UUID
 from datetime import date, timedelta
 
 from app.repositories.payment_repository import PaymentRepository
-from app.repositories.member_subscription_repository import MemberSubscriptionRepository
+from app.repositories.subscription_repository import MemberSubscriptionRepository
 from app.repositories.member_repository import MemberRepository
 from app.repositories.membership_repository import MembershipRepository
 from app.schemas.payment import PaymentCreate
@@ -36,27 +36,21 @@ class PaymentService:
         due_payments = []
         
         for subscription in expired_subscriptions:
-            # Get member
-            member = self.member_repository.get_by_id(db, subscription.member_id)
-            if not member:
-                continue
+            # Check if payment exists for this subscription using subscription_id link
+            payments_for_subscription = self.repository.get_by_subscription_id(db, subscription.id)
+            
+            if not payments_for_subscription:
+                # No payment found for this subscription - it's due
+                # Get member
+                member = self.member_repository.get_by_id(db, subscription.member_id)
+                if not member:
+                    continue
+                    
+                # Get membership
+                membership = self.membership_repository.get_by_id(db, subscription.membership_id)
+                if not membership:
+                    continue
                 
-            # Get membership
-            membership = self.membership_repository.get_by_id(db, subscription.membership_id)
-            if not membership:
-                continue
-            
-            # Check if payment exists for this subscription period
-            # Look for payments made within 7 days before or after subscription end_date
-            payment_window_start = subscription.end_date - timedelta(days=7)
-            payment_window_end = subscription.end_date + timedelta(days=30)  # Grace period
-            min_amount = membership.price * 0.9  # Allow 10% variance
-            
-            payment_exists = self.repository.get_payments_by_member_and_date_range(
-                db, subscription.member_id, payment_window_start, payment_window_end, min_amount
-            )
-            
-            if not payment_exists:
                 # Calculate days overdue
                 days_overdue = (date.today() - subscription.end_date).days
                 

@@ -305,6 +305,7 @@ const MemberProfile = () => {
       >
         <PaymentForm
           memberId={id}
+          subscriptionId={activeSubscription?.id}
           onSubmit={handleCreatePayment}
           onCancel={() => setIsPaymentModalOpen(false)}
         />
