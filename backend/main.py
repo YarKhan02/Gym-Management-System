@@ -11,7 +11,12 @@ from app.routers.dashboard_router import dashboard_router
 
 def create_app():
     app = Flask(__name__)
-    CORS(app)
+    
+    CORS(app, 
+         origins=["http://localhost:8080"],
+         supports_credentials=True,
+         allow_headers=["Content-Type", "Authorization"],
+         methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
 
     # Create database tables
     Base.metadata.create_all(bind=engine)

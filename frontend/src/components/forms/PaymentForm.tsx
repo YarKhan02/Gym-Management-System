@@ -40,7 +40,7 @@ export const PaymentForm = ({ memberId, defaultAmount, subscriptionId, onSubmit,
           type="number"
           step="0.01"
           value={formData.amount}
-          onChange={(e) => setFormData({ ...formData, amount: parseFloat(e.target.value) })}
+          onChange={(e) => setFormData({ ...formData, amount: Number.parseFloat(e.target.value) })}
           required
           min="0"
           className="border-2"

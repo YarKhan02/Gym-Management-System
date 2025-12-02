@@ -42,7 +42,7 @@ export const MembershipForm = ({ membership, onSubmit, onCancel }: MembershipFor
           id="duration_days"
           type="number"
           value={formData.duration_days}
-          onChange={(e) => setFormData({ ...formData, duration_days: parseInt(e.target.value) })}
+          onChange={(e) => setFormData({ ...formData, duration_days: Number.parseInt(e.target.value) })}
           required
           min="1"
           className="border-2"
@@ -56,7 +56,7 @@ export const MembershipForm = ({ membership, onSubmit, onCancel }: MembershipFor
           type="number"
           step="0.01"
           value={formData.price}
-          onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) })}
+          onChange={(e) => setFormData({ ...formData, price: Number.parseFloat(e.target.value) })}
           required
           min="0"
           className="border-2"

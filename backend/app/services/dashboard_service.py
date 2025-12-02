@@ -14,29 +14,39 @@ class DashboardService:
         self.payment_repository = PaymentRepository()
         self.membership_repository = MembershipRepository()
 
-    def get_dashboard_data(self, db: Session):
-        all_members = self.member_repository.get_all(db, skip=0, limit=10000)
-        all_subscriptions = self.subscription_repository.get_all(db, skip=0, limit=10000)
-        all_payments = self.payment_repository.get_all(db, skip=0, limit=10000)
+    def _count_active_members(self, all_subscriptions):
+        active_member_ids = set()
+        for sub in all_subscriptions:
+            if sub.status == 'active':
+                active_member_ids.add(sub.member_id)
+        return len(active_member_ids)
+
+    def _count_expired_members(self, all_subscriptions):
+        expired_subscriptions = []
+        for sub in all_subscriptions:
+            if sub.status == 'expired':
+                expired_subscriptions.append(sub)
         
-        total_members = len(all_members)
-        
-        active_member_ids = set(sub.member_id for sub in all_subscriptions if sub.status == 'active')
-        active_members = len(active_member_ids)
-        
-        expired_subscriptions = [sub for sub in all_subscriptions if sub.status == 'expired']
         expired_member_ids = set()
         for sub in expired_subscriptions:
-            # Check if member has any active subscription
-            has_active = any(s.member_id == sub.member_id and s.status == 'active' for s in all_subscriptions)
+            has_active = False
+            for s in all_subscriptions:
+                if s.member_id == sub.member_id and s.status == 'active':
+                    has_active = True
+                    break
             if not has_active:
                 expired_member_ids.add(sub.member_id)
-        expired_members = len(expired_member_ids)
-        
+        return len(expired_member_ids)
+
+    def _calculate_month_revenue(self, all_payments):
         current_month_start = date.today().replace(day=1)
-        month_payments = [p for p in all_payments if p.payment_date >= current_month_start]
-        month_revenue = sum(p.amount for p in month_payments)
-        
+        month_revenue = 0
+        for p in all_payments:
+            if p.payment_date >= current_month_start:
+                month_revenue += p.amount
+        return month_revenue
+
+    def _get_expiring_subscriptions(self, db: Session, all_subscriptions):
         today = date.today()
         seven_days_later = today + timedelta(days=7)
         expiring_subs = []
@@ -59,7 +69,9 @@ class DashboardService:
                     })
         
         expiring_subs.sort(key=lambda x: x['days_until_expiry'])
-        
+        return expiring_subs
+
+    def _get_recent_payments(self, db: Session, all_payments):
         sorted_payments = sorted(all_payments, key=lambda p: p.payment_date, reverse=True)
         recent_payments = []
         
@@ -74,6 +86,19 @@ class DashboardService:
                     'payment_date': payment.payment_date.isoformat(),
                     'method': payment.method,
                 })
+        return recent_payments
+
+    def get_dashboard_data(self, db: Session):
+        all_members = self.member_repository.get_all(db, skip=0, limit=10000)
+        all_subscriptions = self.subscription_repository.get_all(db, skip=0, limit=10000)
+        all_payments = self.payment_repository.get_all(db, skip=0, limit=10000)
+        
+        total_members = len(all_members)
+        active_members = self._count_active_members(all_subscriptions)
+        expired_members = self._count_expired_members(all_subscriptions)
+        month_revenue = self._calculate_month_revenue(all_payments)
+        expiring_subs = self._get_expiring_subscriptions(db, all_subscriptions)
+        recent_payments = self._get_recent_payments(db, all_payments)
         
         return {
             'stats': {
