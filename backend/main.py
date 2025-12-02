@@ -23,10 +23,6 @@ def create_app():
     app.register_blueprint(payment_router)
     app.register_blueprint(dashboard_router)
 
-    @app.route("/")
-    def health_check():
-        return {"status": "ok", "message": "Gym Management System API"}
-
     return app
 
 

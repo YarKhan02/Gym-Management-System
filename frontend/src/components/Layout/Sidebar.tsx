@@ -21,7 +21,7 @@ export const Sidebar = () => {
   return (
     <aside className="w-64 min-h-screen bg-card border-r-4 border-primary">
       <div className="p-6 border-b-4 border-primary">
-        <h1 className="text-2xl font-bold">GYM MANAGER</h1>
+        <h1 className="text-2xl font-bold">PRIME FITZ</h1>
       </div>
       
       <nav className="p-4">
