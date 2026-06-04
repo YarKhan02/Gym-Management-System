@@ -14,6 +14,8 @@ subscription_service = MemberSubscriptionService()
 def create_subscription(db):
     subscription_data = MemberSubscriptionCreate(**request.json)
     subscription = subscription_service.create_subscription(db, subscription_data)
+    if not subscription:
+        return jsonify({"error": "Active subscription already exists for this member"}), 400
     return jsonify(MemberSubscriptionResponse.model_validate(subscription).model_dump(mode="json")), 201
 
 
@@ -29,7 +31,13 @@ def get_subscription(db, subscription_id):
 @subscription_router.route("/member/<member_id>", methods=["GET"])
 @with_db_session
 def get_member_subscriptions(db, member_id):
-    subscriptions = subscription_service.get_member_subscriptions(db, UUID(member_id))
+    unpaid_only = request.args.get("unpaid", "false").lower() in {"true", "1", "yes"}
+    subscriptions = subscription_service.get_member_subscriptions(
+        db,
+        UUID(member_id),
+        unpaid_only=unpaid_only,
+        include_membership_name=unpaid_only,
+    )
     return jsonify([MemberSubscriptionResponse.model_validate(s).model_dump(mode="json") for s in subscriptions]), 200
 
 

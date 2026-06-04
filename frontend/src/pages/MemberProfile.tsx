@@ -1,7 +1,14 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useMember, useUpdateMember } from '@/hooks/useMembers';
-import { useMemberSubscriptions, useActiveMemberSubscription, useCreateSubscription, useUpdateSubscription, useDeleteSubscription } from '@/hooks/useSubscriptions';
+import {
+  useMemberSubscriptions,
+  useActiveMemberSubscription,
+  useUnpaidMemberSubscriptions,
+  useCreateSubscription,
+  useUpdateSubscription,
+  useDeleteSubscription,
+} from '@/hooks/useSubscriptions';
 import { useMemberPayments, useCreatePayment } from '@/hooks/usePayments';
 import { useMemberships } from '@/hooks/useMemberships';
 import { Button } from '@/components/ui/button';
@@ -25,6 +32,7 @@ const MemberProfile = () => {
   const { data: member, isLoading } = useMember(id!);
   const { data: subscriptions = [] } = useMemberSubscriptions(id!);
   const { data: activeSubscription } = useActiveMemberSubscription(id!);
+  const { data: unpaidSubscriptions = [] } = useUnpaidMemberSubscriptions(id!);
   const { data: payments = [] } = useMemberPayments(id!);
   const { data: memberships = [] } = useMemberships();
   
@@ -93,6 +101,13 @@ const MemberProfile = () => {
   const daysLeft = activeSubscription && activeSubscription.status === 'active' 
     ? getDaysUntilExpiry(activeSubscription.end_date) 
     : 0;
+  const unpaidSubscriptionOptions = unpaidSubscriptions.map((subscription) => {
+    const membershipName = subscription.membership_name || 'N/A';
+    return {
+      id: subscription.id,
+      label: `${membershipName} (${formatDate(subscription.start_date)} - ${formatDate(subscription.end_date)})`,
+    };
+  });
 
   return (
     <div className="space-y-6">
@@ -305,7 +320,7 @@ const MemberProfile = () => {
       >
         <PaymentForm
           memberId={id}
-          subscriptionId={activeSubscription?.id}
+          subscriptionOptions={unpaidSubscriptionOptions}
           onSubmit={handleCreatePayment}
           onCancel={() => setIsPaymentModalOpen(false)}
         />

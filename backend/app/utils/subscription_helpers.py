@@ -28,7 +28,7 @@ def update_subscriptions_status_bulk(db: Session, subscriptions: List[MemberSubs
 
 def check_and_update_status(db: Session, subscription: MemberSubscription) -> MemberSubscription:
     if subscription.status == 'active' and subscription.end_date < date.today():
-        subscription.status = 'Expired'
+        subscription.status = 'expired'
         db.commit()
         db.refresh(subscription)
     return subscription
