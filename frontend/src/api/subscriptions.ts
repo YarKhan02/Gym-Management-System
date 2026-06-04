@@ -11,6 +11,11 @@ export const getSubscriptionsByMemberId = async (memberId: string): Promise<Memb
   return response.data;
 };
 
+export const getUnpaidSubscriptionsByMemberId = async (memberId: string): Promise<MemberSubscription[]> => {
+  const response = await apiClient.get(`/api/subscriptions/member/${memberId}?unpaid=true`);
+  return response.data;
+};
+
 export const createSubscription = async (data: Omit<MemberSubscription, 'id'>): Promise<MemberSubscription> => {
   const response = await apiClient.post('/api/subscriptions', data);
   return response.data;

@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Payment } from '@/interfaces/Payment';
 import * as paymentAPI from '@/api/payments';
 import { toast } from '@/hooks/use-toast';
+import { getBackendErrorMessage } from '@/utils/apiErrors';
 
 export const usePayments = () => {
   return useQuery({
@@ -23,17 +24,21 @@ export const useCreatePayment = () => {
   
   return useMutation({
     mutationFn: (data: Omit<Payment, 'id'>) => paymentAPI.createPayment(data),
-    onSuccess: () => {
+    onSuccess: (_payment, variables) => {
       queryClient.invalidateQueries({ queryKey: ['payments'] });
+      if (variables.member_id) {
+        queryClient.invalidateQueries({ queryKey: ['subscriptions', 'member', variables.member_id, 'unpaid'] });
+      }
       toast({
         title: 'Success',
         description: 'Payment recorded successfully',
       });
     },
-    onError: () => {
+    onError: (error) => {
+      const description = getBackendErrorMessage(error, 'Failed to record payment');
       toast({
         title: 'Error',
-        description: 'Failed to record payment',
+        description,
         variant: 'destructive',
       });
     },

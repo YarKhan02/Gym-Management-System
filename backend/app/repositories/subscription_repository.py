@@ -50,3 +50,9 @@ class MemberSubscriptionRepository:
         return db.query(MemberSubscription).filter(
             MemberSubscription.status == 'expired'
         ).all()
+    
+    def get_active_subscriptions(self, db: Session, member_id: UUID) -> Optional[MemberSubscription]:
+        return db.query(MemberSubscription).filter(
+            MemberSubscription.status == 'active',
+            MemberSubscription.member_id == member_id
+        ).first()

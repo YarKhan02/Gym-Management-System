@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Payment } from '@/interfaces/Payment';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,27 +9,58 @@ interface PaymentFormProps {
   memberId?: string;
   defaultAmount?: number;
   subscriptionId?: string | null;
+  subscriptionOptions?: Array<{ id: string; label: string }>;
   onSubmit: (data: Omit<Payment, 'id'>) => void;
   onCancel: () => void;
 }
 
-export const PaymentForm = ({ memberId, defaultAmount, subscriptionId, onSubmit, onCancel }: PaymentFormProps) => {
+export const PaymentForm = ({
+  memberId,
+  defaultAmount,
+  subscriptionId,
+  subscriptionOptions,
+  onSubmit,
+  onCancel,
+}: PaymentFormProps) => {
   const [formData, setFormData] = useState({
     member_id: memberId || '',
-    subscription_id: subscriptionId || null,
+    subscription_id: subscriptionId ?? subscriptionOptions?.[0]?.id ?? null,
     amount: defaultAmount || 0,
     payment_date: new Date().toISOString().split('T')[0],
     method: 'Cash',
     notes: '',
   });
 
+  useEffect(() => {
+    if (subscriptionId) {
+      setFormData((prev) => ({ ...prev, subscription_id: subscriptionId }));
+      return;
+    }
+
+    if (subscriptionOptions?.length) {
+      setFormData((prev) => {
+        if (prev.subscription_id) {
+          return prev;
+        }
+        return { ...prev, subscription_id: subscriptionOptions[0].id };
+      });
+    }
+  }, [subscriptionId, subscriptionOptions]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (subscriptionOptions && !formData.subscription_id) {
+      return;
+    }
     onSubmit({
       ...formData,
       notes: formData.notes || null,
     });
   };
+
+  const showSubscriptionSelect = Boolean(subscriptionOptions);
+  const hasSubscriptionOptions = (subscriptionOptions?.length ?? 0) > 0;
+  const isSubmitDisabled = showSubscriptionSelect && !formData.subscription_id;
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -59,6 +90,31 @@ export const PaymentForm = ({ memberId, defaultAmount, subscriptionId, onSubmit,
         />
       </div>
 
+      {showSubscriptionSelect && (
+        <div className="space-y-2">
+          <Label htmlFor="subscription">Subscription *</Label>
+          {hasSubscriptionOptions ? (
+            <Select
+              value={formData.subscription_id ?? ''}
+              onValueChange={(value) => setFormData({ ...formData, subscription_id: value })}
+            >
+              <SelectTrigger className="border-2">
+                <SelectValue placeholder="Select subscription" />
+              </SelectTrigger>
+              <SelectContent>
+                {subscriptionOptions?.map((option) => (
+                  <SelectItem key={option.id} value={option.id}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          ) : (
+            <p className="text-sm text-muted-foreground">No unpaid subscriptions available.</p>
+          )}
+        </div>
+      )}
+
       <div className="space-y-2">
         <Label htmlFor="method">Payment Method *</Label>
         <Select value={formData.method} onValueChange={(value) => setFormData({ ...formData, method: value })}>
@@ -79,7 +135,7 @@ export const PaymentForm = ({ memberId, defaultAmount, subscriptionId, onSubmit,
         <Button type="button" variant="outline" onClick={onCancel} className="border-2">
           Cancel
         </Button>
-        <Button type="submit">
+        <Button type="submit" disabled={isSubmitDisabled}>
           Record Payment
         </Button>
       </div>

@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { MemberSubscription } from '@/interfaces/MemberSubscription';
 import * as subscriptionAPI from '@/api/subscriptions';
 import { toast } from '@/hooks/use-toast';
+import { getBackendErrorMessage } from '@/utils/apiErrors';
 
 export const useSubscriptions = () => {
   return useQuery({
@@ -14,6 +15,14 @@ export const useMemberSubscriptions = (memberId: string) => {
   return useQuery({
     queryKey: ['subscriptions', 'member', memberId],
     queryFn: () => subscriptionAPI.getSubscriptionsByMemberId(memberId),
+    enabled: !!memberId,
+  });
+};
+
+export const useUnpaidMemberSubscriptions = (memberId: string) => {
+  return useQuery({
+    queryKey: ['subscriptions', 'member', memberId, 'unpaid'],
+    queryFn: () => subscriptionAPI.getUnpaidSubscriptionsByMemberId(memberId),
     enabled: !!memberId,
   });
 };
@@ -41,10 +50,11 @@ export const useCreateSubscription = () => {
         description: 'Subscription created successfully',
       });
     },
-    onError: () => {
+    onError: (error) => {
+      const description = getBackendErrorMessage(error, 'Failed to create subscription');
       toast({
         title: 'Error',
-        description: 'Failed to create subscription',
+        description,
         variant: 'destructive',
       });
     },
