@@ -9,6 +9,7 @@ class Member(Base):
     __tablename__ = "members"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id = Column(UUID(as_uuid=True), index=True, nullable=False)
     full_name = Column(String, nullable=False)
     phone = Column(String, nullable=True)
     gender = Column(String, nullable=True)

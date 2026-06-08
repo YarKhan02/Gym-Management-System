@@ -11,7 +11,7 @@ dashboard_service = DashboardService()
 @dashboard_router.route("", methods=["GET"])
 @with_db_session
 @verify_token
-def get_dashboard(db):
-    dashboard_data = dashboard_service.get_dashboard_data(db)
+def get_dashboard(db, user):
+    dashboard_data = dashboard_service.get_dashboard_data(db, user["id"])
     return jsonify(dashboard_data), 200
     

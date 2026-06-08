@@ -11,19 +11,20 @@ class MemberSubscriptionService:
         self.payment_repository = PaymentRepository()
         self.membership_repository = MembershipRepository()
 
-    def create_subscription(self, db: Session, subscription: MemberSubscriptionCreate):
+    def create_subscription(self, db: Session, user_id: str, subscription: MemberSubscriptionCreate):
         subscription_data = subscription.model_dump()
         is_active_subscription = self.repository.get_active_subscriptions(db, subscription_data['member_id'])
         if is_active_subscription:
             return None
         return self.repository.create(db, subscription_data)
 
-    def get_subscription(self, db: Session, subscription_id: UUID):
+    def get_subscription(self, db: Session, user_id: str, subscription_id: UUID):
         return self.repository.get_by_id(db, subscription_id)
 
     def get_member_subscriptions(
         self,
         db: Session,
+        user_id: str,
         member_id: UUID,
         unpaid_only: bool = False,
         include_membership_name: bool = False,
@@ -31,13 +32,13 @@ class MemberSubscriptionService:
         subscriptions = self.repository.get_by_member_id(db, member_id)
 
         if unpaid_only:
-            payments = self.payment_repository.get_by_member_id(db, member_id)
+            payments = self.payment_repository.get_by_member_id(db, user_id, member_id)
             paid_subscription_ids = {payment.subscription_id for payment in payments if payment.subscription_id}
             subscriptions = [subscription for subscription in subscriptions if subscription.id not in paid_subscription_ids]
 
         if include_membership_name:
             membership_ids = list({subscription.membership_id for subscription in subscriptions})
-            memberships = self.membership_repository.get_by_ids(db, membership_ids) if membership_ids else []
+            memberships = self.membership_repository.get_by_ids(db, user_id, membership_ids) if membership_ids else []
             membership_name_by_id = {membership.id: membership.name for membership in memberships}
             return [
                 {
@@ -54,8 +55,8 @@ class MemberSubscriptionService:
 
         return subscriptions
 
-    def get_all_subscriptions(self, db: Session, skip: int = 0, limit: int = 100):
-        all_subscriptions = self.repository.get_all(db, skip, limit)
+    def get_all_subscriptions(self, db: Session, user_id: str, skip: int = 0, limit: int = 100):
+        all_subscriptions = self.repository.get_all(db, user_id, skip, limit)
         
         member_subscriptions = {}
         for sub in all_subscriptions:
@@ -77,8 +78,8 @@ class MemberSubscriptionService:
         
         return filtered_subscriptions
 
-    def update_subscription(self, db: Session, subscription_id: UUID, subscription_data: dict):
+    def update_subscription(self, db: Session, user_id: str, subscription_id: UUID, subscription_data: dict):
         return self.repository.update(db, subscription_id, subscription_data)
 
-    def delete_subscription(self, db: Session, subscription_id: UUID):
+    def delete_subscription(self, db: Session, user_id: str, subscription_id: UUID):
         return self.repository.delete(db, subscription_id)
