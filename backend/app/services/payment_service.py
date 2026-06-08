@@ -16,22 +16,21 @@ class PaymentService:
         self.member_repository = MemberRepository()
         self.membership_repository = MembershipRepository()
 
-    def create_payment(self, db: Session, payment: PaymentCreate):
+    def create_payment(self, db: Session, user_id, payment: PaymentCreate):
         payment_data = payment.model_dump()
-        return self.repository.create(db, payment_data)
+        return self.repository.create(db, user_id, payment_data)
 
-    def get_payment(self, db: Session, payment_id: UUID):
-        return self.repository.get_by_id(db, payment_id)
+    def get_payment(self, db: Session, user_id, payment_id: UUID):
+        return self.repository.get_by_id(db, user_id, payment_id)
 
-    def get_member_payments(self, db: Session, member_id: UUID):
-        return self.repository.get_by_member_id(db, member_id)
+    def get_member_payments(self, db: Session, user_id, member_id: UUID):
+        return self.repository.get_by_member_id(db, user_id, member_id)
 
-    def get_all_payments(self, db: Session, skip: int = 0, limit: int = 100):
-        return self.repository.get_all(db, skip, limit)
+    def get_all_payments(self, db: Session, user_id, skip: int = 0, limit: int = 100):
+        return self.repository.get_all(db, user_id, skip, limit)
 
-    def get_due_payments(self, db: Session):
-        # Get all expired subscriptions
-        expired_subscriptions = self.subscription_repository.get_expired_subscriptions(db)
+    def get_due_payments(self, db: Session, user_id):
+        expired_subscriptions = self.subscription_repository.get_expired_subscriptions(db, user_id)
         
         due_payments = []
         

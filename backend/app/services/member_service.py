@@ -9,19 +9,19 @@ class MemberService:
     def __init__(self):
         self.repository = MemberRepository()
 
-    def create_member(self, db: Session, member: MemberCreate):
+    def create_member(self, db: Session, user_id, member: MemberCreate):
         member_data = member.model_dump()
-        return self.repository.create(db, member_data)
+        return self.repository.create(db, user_id, member_data)
 
-    def get_member(self, db: Session, member_id: UUID):
-        return self.repository.get_by_id(db, member_id)
+    def get_member(self, db: Session, user_id, member_id: UUID):
+        return self.repository.get_by_id(db, user_id, member_id)
 
-    def get_all_members(self, db: Session, skip: int = 0, limit: int = 100):
-        return self.repository.get_all(db, skip, limit)
+    def get_all_members(self, db: Session, user_id, skip: int = 0, limit: int = 100):
+        return self.repository.get_all(db, user_id, skip, limit)
 
-    def update_member(self, db: Session, member_id: UUID, member: MemberUpdate):
+    def update_member(self, db: Session, user_id, member_id: UUID, member: MemberUpdate):
         member_data = member.model_dump(exclude_unset=True)
-        return self.repository.update(db, member_id, member_data)
+        return self.repository.update(db, user_id, member_id, member_data)
 
-    def delete_member(self, db: Session, member_id: UUID):
-        return self.repository.delete(db, member_id)
+    def delete_member(self, db: Session, user_id, member_id: UUID):
+        return self.repository.delete(db, user_id, member_id)

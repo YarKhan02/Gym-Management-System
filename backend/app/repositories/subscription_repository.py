@@ -3,6 +3,7 @@ from typing import List, Optional
 from uuid import UUID
 
 from app.models.member_subscription import MemberSubscription
+from app.models.member import Member
 from app.utils.subscription_helpers import check_and_update_status, update_subscriptions_status_bulk
 
 
@@ -24,8 +25,15 @@ class MemberSubscriptionRepository:
         subscriptions = db.query(MemberSubscription).filter(MemberSubscription.member_id == member_id).all()
         return update_subscriptions_status_bulk(db, subscriptions)
 
-    def get_all(self, db: Session, skip: int = 0, limit: int = 100) -> List[MemberSubscription]:
-        subscriptions = db.query(MemberSubscription).offset(skip).limit(limit).all()
+    def get_all(self, db: Session, user_id: str, skip: int = 0, limit: int = 100) -> List[MemberSubscription]:
+        subscriptions = (
+            db.query(MemberSubscription)
+            .join(Member, MemberSubscription.member_id == Member.id)
+            .filter(Member.user_id == user_id)
+            .offset(skip)
+            .limit(limit)
+            .all()
+        )
         return update_subscriptions_status_bulk(db, subscriptions)
 
     def update(self, db: Session, subscription_id: UUID, subscription_data: dict) -> Optional[MemberSubscription]:
@@ -46,10 +54,13 @@ class MemberSubscriptionRepository:
             return True
         return False
 
-    def get_expired_subscriptions(self, db: Session) -> List[MemberSubscription]:
-        return db.query(MemberSubscription).filter(
-            MemberSubscription.status == 'expired'
-        ).all()
+    def get_expired_subscriptions(self, db: Session, user_id: str) -> List[MemberSubscription]:
+        return (
+            db.query(MemberSubscription)
+            .join(Member, MemberSubscription.member_id == Member.id)
+            .filter(MemberSubscription.status == 'expired', Member.user_id == user_id)
+            .all()
+        )
     
     def get_active_subscriptions(self, db: Session, member_id: UUID) -> Optional[MemberSubscription]:
         return db.query(MemberSubscription).filter(

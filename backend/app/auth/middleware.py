@@ -1,10 +1,7 @@
-import json
-import time
 import functools
 import logging
 from typing import Optional
 
-import requests
 from flask import request, jsonify, g
 from jwt import decode as jwt_decode, PyJWKClient
 from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
@@ -49,14 +46,15 @@ def verify_token(f):
                 options={"verify_exp": True},
             )
 
-            g.user = {
+            user = {
                 "id":           payload["sub"],
                 "email":        payload["email"],
                 "global_roles": payload.get("global_roles", []),
-                # only pull roles scoped to THIS app
                 "app_roles":    payload.get("apps", {}).get(APP_CLIENT_ID, []),
-                "jti":          payload.get("jti"),   # token ID (for blocklist)
+                "jti":          payload.get("jti"),
             }
+
+            g.user = user
 
         except ExpiredSignatureError:
             return jsonify({"error": "token expired"}), 401
@@ -67,7 +65,7 @@ def verify_token(f):
             logger.error("Auth middleware error: %s", e)
             return jsonify({"error": "authentication unavailable"}), 503
 
-        return f(*args, **kwargs)
+        return f(*args, user, **kwargs)
     return decorated
 
 
