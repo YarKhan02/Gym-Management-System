@@ -4,6 +4,7 @@ from uuid import UUID
 from app.utils import with_db_session, MEMBER_NOT_FOUND
 from app.services.member_service import MemberService
 from app.schemas.member import MemberCreate, MemberUpdate, MemberResponse
+from app.auth.middleware import verify_token
 
 member_router = Blueprint("members", __name__, url_prefix="/api/members")
 member_service = MemberService()
@@ -11,6 +12,7 @@ member_service = MemberService()
 
 @member_router.route("", methods=["POST"])
 @with_db_session
+@verify_token
 def create_member(db):
     try:
         member_data = MemberCreate(**request.json)
@@ -22,6 +24,7 @@ def create_member(db):
 
 @member_router.route("/<member_id>", methods=["GET"])
 @with_db_session
+@verify_token
 def get_member(db, member_id):
     member = member_service.get_member(db, UUID(member_id))
     if not member:
@@ -31,6 +34,7 @@ def get_member(db, member_id):
 
 @member_router.route("", methods=["GET"])
 @with_db_session
+@verify_token
 def get_all_members(db):
     skip = request.args.get("skip", 0, type=int)
     limit = request.args.get("limit", 100, type=int)
@@ -40,6 +44,7 @@ def get_all_members(db):
 
 @member_router.route("/<member_id>", methods=["PUT"])
 @with_db_session
+@verify_token
 def update_member(db, member_id):
     try:
         member_data = MemberUpdate(**request.json)
@@ -53,6 +58,7 @@ def update_member(db, member_id):
 
 @member_router.route("/<member_id>", methods=["DELETE"])
 @with_db_session
+@verify_token
 def delete_member(db, member_id):
     success = member_service.delete_member(db, UUID(member_id))
     if not success:
