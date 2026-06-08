@@ -4,6 +4,7 @@ from uuid import UUID
 from app.utils import with_db_session, SUBSCRIPTION_NOT_FOUND
 from app.services.subscription_service import MemberSubscriptionService
 from app.schemas.subscription import MemberSubscriptionCreate, MemberSubscriptionResponse
+from app.auth.middleware import verify_token
 
 subscription_router = Blueprint("subscriptions", __name__, url_prefix="/api/subscriptions")
 subscription_service = MemberSubscriptionService()
@@ -11,6 +12,7 @@ subscription_service = MemberSubscriptionService()
 
 @subscription_router.route("", methods=["POST"])
 @with_db_session
+@verify_token
 def create_subscription(db):
     subscription_data = MemberSubscriptionCreate(**request.json)
     subscription = subscription_service.create_subscription(db, subscription_data)
@@ -21,6 +23,7 @@ def create_subscription(db):
 
 @subscription_router.route("/<subscription_id>", methods=["GET"])
 @with_db_session
+@verify_token
 def get_subscription(db, subscription_id):
     subscription = subscription_service.get_subscription(db, UUID(subscription_id))
     if not subscription:
@@ -30,6 +33,7 @@ def get_subscription(db, subscription_id):
 
 @subscription_router.route("/member/<member_id>", methods=["GET"])
 @with_db_session
+@verify_token
 def get_member_subscriptions(db, member_id):
     unpaid_only = request.args.get("unpaid", "false").lower() in {"true", "1", "yes"}
     subscriptions = subscription_service.get_member_subscriptions(
@@ -43,6 +47,7 @@ def get_member_subscriptions(db, member_id):
 
 @subscription_router.route("", methods=["GET"])
 @with_db_session
+@verify_token
 def get_all_subscriptions(db):
     skip = request.args.get("skip", 0, type=int)
     limit = request.args.get("limit", 100, type=int)
@@ -52,6 +57,7 @@ def get_all_subscriptions(db):
 
 @subscription_router.route("/<subscription_id>", methods=["PUT"])
 @with_db_session
+@verify_token
 def update_subscription(db, subscription_id):
     subscription = subscription_service.update_subscription(db, UUID(subscription_id), request.json)
     if not subscription:
@@ -61,6 +67,7 @@ def update_subscription(db, subscription_id):
 
 @subscription_router.route("/<subscription_id>", methods=["DELETE"])
 @with_db_session
+@verify_token
 def delete_subscription(db, subscription_id):
     success = subscription_service.delete_subscription(db, UUID(subscription_id))
     if not success:

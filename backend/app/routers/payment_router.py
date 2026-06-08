@@ -4,6 +4,7 @@ from uuid import UUID
 from app.utils import with_db_session
 from app.services.payment_service import PaymentService
 from app.schemas.payment import PaymentCreate, PaymentResponse
+from app.auth.middleware import verify_token
 
 payment_router = Blueprint("payments", __name__, url_prefix="/api/payments")
 payment_service = PaymentService()
@@ -11,6 +12,7 @@ payment_service = PaymentService()
 
 @payment_router.route("", methods=["POST"])
 @with_db_session
+@verify_token
 def create_payment(db):
     payment_data = PaymentCreate(**request.json)
     payment = payment_service.create_payment(db, payment_data)
@@ -19,6 +21,7 @@ def create_payment(db):
 
 @payment_router.route("/<payment_id>", methods=["GET"])
 @with_db_session
+@verify_token
 def get_payment(db, payment_id):
     payment = payment_service.get_payment(db, UUID(payment_id))
     if not payment:
@@ -28,12 +31,14 @@ def get_payment(db, payment_id):
 
 @payment_router.route("/member/<member_id>", methods=["GET"])
 @with_db_session
+@verify_token
 def get_member_payments(db, member_id):
     payments = payment_service.get_member_payments(db, UUID(member_id))
     return jsonify([PaymentResponse.model_validate(p).model_dump(mode="json") for p in payments]), 200
 
 @payment_router.route("", methods=["GET"])
 @with_db_session
+@verify_token
 def get_all_payments(db):
     skip = request.args.get("skip", 0, type=int)
     limit = request.args.get("limit", 100, type=int)
@@ -42,6 +47,7 @@ def get_all_payments(db):
 
 @payment_router.route("/due", methods=["GET"])
 @with_db_session
+@verify_token
 def get_due_payments(db):
     due_payments = payment_service.get_due_payments(db)
     return jsonify(due_payments), 200
