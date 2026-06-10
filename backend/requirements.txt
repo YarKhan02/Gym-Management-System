@@ -8,3 +8,4 @@ python-dotenv
 PyJWT[crypto]
 requests
 alembic
+pydantic_settings
