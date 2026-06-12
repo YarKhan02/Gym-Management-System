@@ -1,13 +1,15 @@
 import axios from 'axios';
 import { getValidStoredAccessToken } from '@/utils/authToken';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
 
 // Create axios instance
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
+    'X-Client-ID': CLIENT_ID,
   },
 });
 

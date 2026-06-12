@@ -6,11 +6,13 @@ from flask import request, jsonify, g
 from jwt import decode as jwt_decode, PyJWKClient
 from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
 
+from app.utils.config import settings
+
 logger = logging.getLogger(__name__)
 
-AUTH_SERVER_URL = "http://localhost:8080"   # your Go auth server
-APP_CLIENT_ID   = "shk_gym-management-system_-H1zpoIu0v"   # registered in auth server
-JWT_ISSUER      = "auth.shoukan-labs.com"
+AUTH_SERVER_URL = settings.AUTH_SERVER_URL   # your Go auth server
+APP_CLIENT_ID   = settings.APP_CLIENT_ID   # registered in auth server
+JWT_ISSUER      = settings.JWT_ISSUER
 
 # PyJWKClient handles JWKS fetching + caching + key rotation automatically
 # It fetches once, caches, and auto-rotates when it sees an unknown kid header
@@ -45,6 +47,10 @@ def verify_token(f):
                 issuer=JWT_ISSUER,
                 options={"verify_exp": True},
             )
+
+            app_claims = payload.get("client_id")
+            if not app_claims or app_claims != APP_CLIENT_ID:
+                return jsonify({"error": "invalid token"}), 401
 
             user = {
                 "id":           payload["sub"],

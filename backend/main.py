@@ -15,7 +15,7 @@ def create_app():
     CORS(app, 
          origins=["http://localhost:4567"],
          supports_credentials=True,
-         allow_headers=["Content-Type", "Authorization"],
+         allow_headers=["Content-Type", "Authorization", "X-Client-ID"],
          methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
 
     # Create database tables
