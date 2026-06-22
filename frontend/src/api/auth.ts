@@ -2,8 +2,8 @@ import { authClient } from '@/api/authClient';
 import { AuthResponse, LoginPayload, RegisterPayload } from '@/interfaces/Auth';
 
 const AUTH_ROUTES = {
-  register: '/auth/register',
-  login: '/auth/login',
+  register: '/auth/app/register',
+  login: '/auth/app/login',
   logout: '/auth/logout',
   me: '/auth/me',
 };

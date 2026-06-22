@@ -26,7 +26,7 @@ export const TopBar = () => {
   return (
     <header className="h-16 border-b-4 border-primary bg-card flex items-center justify-between px-6">
       <div>
-        <h2 className="text-xl font-bold">Welcome Back</h2>
+        <h2 className="text-xl font-bold">Shoukan Labs</h2>
         <p className="text-sm text-muted-foreground">Manage your gym efficiently</p>
       </div>
       

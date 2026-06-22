@@ -10,7 +10,7 @@ from app.utils.config import settings
 
 logger = logging.getLogger(__name__)
 
-AUTH_SERVER_URL = settings.AUTH_SERVER_URL   # your Go auth server
+AUTH_SERVER_URL = settings.AUTH_SERVER_URL   # auth server
 APP_CLIENT_ID   = settings.APP_CLIENT_ID   # registered in auth server
 JWT_ISSUER      = settings.JWT_ISSUER
 
