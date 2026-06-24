@@ -25,6 +25,7 @@ import { formatDate, getDaysUntilExpiry } from '@/utils/dateHelpers';
 import { Member } from '@/interfaces/Member';
 import { Payment } from '@/interfaces/Payment';
 import { MemberSubscription } from '@/interfaces/MemberSubscription';
+import { CardSkeleton, PageHeaderSkeleton, TableSkeleton } from '@/components/ui/PageSkeleton';
 
 const MemberProfile = () => {
   const { id } = useParams<{ id: string }>();
@@ -95,7 +96,33 @@ const MemberProfile = () => {
   };
 
   if (isLoading || !member) {
-    return <div className="flex items-center justify-center h-64">Loading...</div>;
+    return (
+      <div className="space-y-4 sm:space-y-6">
+        <Seo title="Member Profile | Gym Manager Pro" description="View and edit a gym member's profile, subscriptions, and payment history." path="/members" />
+        <PageHeaderSkeleton action />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+          <CardSkeleton rows={5} />
+          <CardSkeleton rows={4} className="lg:col-span-2" />
+        </div>
+        <Card className="border-4 border-primary">
+          <CardHeader>
+            <div className="h-6 w-48 animate-pulse rounded-md bg-muted" />
+          </CardHeader>
+          <CardContent>
+            <TableSkeleton columns={4} rows={5} />
+          </CardContent>
+        </Card>
+        <Card className="border-4 border-primary">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div className="h-6 w-40 animate-pulse rounded-md bg-muted" />
+            <div className="h-9 w-28 animate-pulse rounded-md bg-muted" />
+          </CardHeader>
+          <CardContent>
+            <TableSkeleton columns={3} rows={5} />
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   const isSubExpired = activeSubscription?.status === 'expired';

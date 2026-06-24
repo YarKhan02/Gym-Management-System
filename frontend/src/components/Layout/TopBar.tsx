@@ -28,7 +28,7 @@ export const TopBar = () => {
   };
 
   return (
-    <header className="h-14 sm:h-16 border-b-4 border-primary bg-card flex items-center justify-between px-3 sm:px-6 gap-2">
+    <header className="h-14 sm:h-16 bg-card flex items-center justify-between px-3 sm:px-6 gap-2">
       {/* Left section with hamburger menu on mobile */}
       <div className="flex items-center gap-2 sm:gap-4 flex-1 min-w-0">
         {isMobile && (

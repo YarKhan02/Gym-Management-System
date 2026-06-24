@@ -7,6 +7,7 @@ from app.routers.membership_router import membership_router
 from app.routers.subscription_router import subscription_router
 from app.routers.payment_router import payment_router
 from app.routers.dashboard_router import dashboard_router
+from app.routers.analytics_router import analytics_router
 from app.utils.config import settings
 
 
@@ -14,7 +15,7 @@ def create_app():
     app = Flask(__name__)
     
     CORS(app, 
-         origins=["https://gym.shoukan-labs.com"],
+         origins=["https://gym.shoukan-labs.com", "http://localhost:4567"],
          supports_credentials=True,
          allow_headers=["Content-Type", "Authorization", "X-Client-ID"],
          methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
@@ -28,6 +29,7 @@ def create_app():
     app.register_blueprint(subscription_router)
     app.register_blueprint(payment_router)
     app.register_blueprint(dashboard_router)
+    app.register_blueprint(analytics_router)
 
     return app
 

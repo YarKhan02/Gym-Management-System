@@ -8,16 +8,18 @@ import {
   CreditCard, 
   CalendarDays, 
   Wallet,
-  AlertCircle
+  AlertCircle,
+  BarChart3
 } from 'lucide-react';
 
 const navItems = [
-  { name: 'Dashboard', path: '/', icon: LayoutDashboard },
+  { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
   { name: 'Members', path: '/members', icon: Users },
   { name: 'Plans', path: '/memberships', icon: CreditCard },
   { name: 'Subscriptions', path: '/subscriptions', icon: CalendarDays },
   { name: 'Payments', path: '/payments', icon: Wallet },
   { name: 'Due Payments', path: '/due-payments', icon: AlertCircle },
+  { name: 'Analytics', path: '/analytics', icon: BarChart3 },
 ];
 
 export const Sidebar = () => {
@@ -49,7 +51,7 @@ export const Sidebar = () => {
         } min-h-screen bg-card border-r-4 border-primary`}
       >
         {/* Header */}
-        <div className="p-6 border-b-4 border-primary flex items-center justify-between">
+        <div className="p-6 flex items-center justify-between">
           <h1 className="text-xl sm:text-2xl font-bold truncate">Gym Manager</h1>
           {isMobile && (
             <button

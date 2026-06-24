@@ -9,6 +9,7 @@ import { formatDate } from '@/utils/dateHelpers';
 import { Payment } from '@/interfaces/Payment';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { PageHeaderSkeleton, TableSkeleton, ToolbarSkeleton } from '@/components/ui/PageSkeleton';
 
 const Payments = () => {
   const { data: payments = [], isLoading } = usePayments();
@@ -62,7 +63,22 @@ const Payments = () => {
   };
 
   if (isLoading) {
-    return <div className="flex items-center justify-center h-64">Loading...</div>;
+    return (
+      <div className="space-y-4 sm:space-y-6">
+        <Seo title="Payments | Gym Manager Pro" description="Record and review gym member payments and transaction history." path="/payments" />
+        <PageHeaderSkeleton action />
+        <div className="flex flex-col lg:flex-row gap-4 p-4 border-4 border-primary bg-card">
+          <div className="flex-1">
+            <ToolbarSkeleton fields={2} />
+          </div>
+          <div className="lg:border-l-4 lg:border-primary lg:pl-4 space-y-2">
+            <div className="h-4 w-24 animate-pulse rounded-md bg-muted" />
+            <div className="h-8 w-40 animate-pulse rounded-md bg-muted" />
+          </div>
+        </div>
+        <TableSkeleton columns={4} />
+      </div>
+    );
   }
 
   return (
