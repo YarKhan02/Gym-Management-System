@@ -14,7 +14,7 @@ def create_app():
     app = Flask(__name__)
     
     CORS(app, 
-         origins=["http://gym.shoukan-labs.com"],
+         origins=["https://gym.shoukan-labs.com"],
          supports_credentials=True,
          allow_headers=["Content-Type", "Authorization", "X-Client-ID"],
          methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])

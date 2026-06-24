@@ -9,3 +9,4 @@ PyJWT[crypto]
 requests
 alembic
 pydantic_settings
+gunicorn
