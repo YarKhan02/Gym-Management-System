@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { toast } from '@/hooks/use-toast';
 import { getBackendErrorMessage } from '@/utils/apiErrors';
 import { useAuth } from '@/hooks/useAuth';
+import { Seo } from '@/components/Seo';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -50,21 +51,25 @@ const Register = () => {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-background">
-      <div className="pointer-events-none absolute -left-28 bottom-10 h-64 w-64 rotate-6 border-4 border-primary bg-card" />
-      <div className="pointer-events-none absolute -right-20 top-12 h-72 w-72 -rotate-6 border-4 border-primary bg-secondary" />
+      <Seo
+        title="Create Account | Gym Manager Pro"
+        description="Create a Gym Manager Pro account to access the gym management dashboard."
+        path="/register"
+      />
+      <div className="pointer-events-none hidden sm:block absolute -left-28 bottom-10 h-64 w-64 rotate-6 border-4 border-primary bg-card" />
+      <div className="pointer-events-none hidden sm:block absolute -right-20 top-12 h-72 w-72 -rotate-6 border-4 border-primary bg-secondary" />
 
-      <div className="mx-auto flex min-h-screen w-full max-w-6xl items-center justify-center px-4 py-10">
+      <div className="mx-auto flex min-h-screen w-full max-w-6xl items-center justify-center px-3 sm:px-4 py-6 sm:py-10">
         <Card className="w-full max-w-md border-4 border-primary shadow-lg">
-          <CardHeader className="space-y-2 border-b-4 border-primary">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground">Prime Fitz Auth</p>
-            <CardTitle className="text-3xl">Create Account</CardTitle>
-            <CardDescription>Register a new account for dashboard access.</CardDescription>
+          <CardHeader className="space-y-2 border-b-4 border-primary p-4 sm:p-6">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold leading-none tracking-tight">Create Your Gym Manager Pro Account</h1>
+            <CardDescription className="text-xs sm:text-sm">Register a new account for dashboard access.</CardDescription>
           </CardHeader>
-          <CardContent className="pt-6">
-            <form onSubmit={handleSubmit} className="space-y-5">
+          <CardContent className="p-4 sm:p-6 pt-4 sm:pt-6">
+            <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-5">
 
               <div className="space-y-2">
-                <Label htmlFor="email" className="font-semibold">Email</Label>
+                <Label htmlFor="email" className="font-semibold text-xs sm:text-sm">Email</Label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                   <Input
@@ -72,7 +77,7 @@ const Register = () => {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="border-2 border-primary pl-10"
+                    className="border-2 border-primary pl-10 text-sm"
                     placeholder="name@example.com"
                     required
                   />
@@ -80,7 +85,7 @@ const Register = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password" className="font-semibold">Password</Label>
+                <Label htmlFor="password" className="font-semibold text-xs sm:text-sm">Password</Label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                   <Input
@@ -88,13 +93,15 @@ const Register = () => {
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="border-2 border-primary pl-10 pr-10"
+                    className="border-2 border-primary pl-10 pr-10 text-sm"
                     placeholder="********"
                     required
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword((prev) => !prev)}
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    aria-pressed={showPassword}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -103,7 +110,7 @@ const Register = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword" className="font-semibold">Confirm Password</Label>
+                <Label htmlFor="confirmPassword" className="font-semibold text-xs sm:text-sm">Confirm Password</Label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                   <Input
@@ -111,13 +118,15 @@ const Register = () => {
                     type={showConfirmPassword ? 'text' : 'password'}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="border-2 border-primary pl-10 pr-10"
+                    className="border-2 border-primary pl-10 pr-10 text-sm"
                     placeholder="********"
                     required
                   />
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword((prev) => !prev)}
+                    aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
+                    aria-pressed={showConfirmPassword}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                   >
                     {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -125,12 +134,12 @@ const Register = () => {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full border-2 border-primary" disabled={isSubmitting}>
+              <Button type="submit" className="w-full border-2 border-primary text-sm sm:text-base" disabled={isSubmitting}>
                 {isSubmitting ? 'Creating account...' : 'Create Account'}
               </Button>
             </form>
 
-            <p className="mt-6 text-center text-sm">
+            <p className="mt-4 sm:mt-6 text-center text-xs sm:text-sm">
               Already registered?{' '}
               <Link to="/login" className="font-bold underline underline-offset-4">
                 Sign in instead

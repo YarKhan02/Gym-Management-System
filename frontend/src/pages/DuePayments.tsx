@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Seo } from '@/components/Seo';
 import { useNavigate } from 'react-router-dom';
 import { useDuePayments, useCreatePayment } from '@/hooks/usePayments';
 import { DataTable } from '@/components/ui/DataTable';
@@ -37,26 +38,27 @@ const DuePayments = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
+      <Seo title="Due Payments | Gym Manager Pro" description="Review outstanding member payments and mark dues as paid." path="/due-payments" />
       <div>
-        <h1 className="text-3xl font-bold mb-2 flex items-center gap-2">
-          <AlertCircle className="h-8 w-8 text-destructive" />
-          Due Payments
+        <h1 className="text-2xl sm:text-3xl font-bold mb-1 sm:mb-2 flex items-center gap-2">
+          <AlertCircle className="h-6 w-6 sm:h-8 sm:w-8 text-destructive flex-shrink-0" />
+          <span>Due Payments</span>
         </h1>
-        <p className="text-muted-foreground">Members with overdue subscriptions</p>
+        <p className="text-xs sm:text-sm text-muted-foreground">Members with overdue subscriptions</p>
       </div>
 
       {duePayments.length === 0 ? (
-        <div className="flex flex-col items-center justify-center h-64 border-4 border-primary bg-card">
-          <AlertCircle className="h-16 w-16 text-muted-foreground mb-4" />
-          <h2 className="text-2xl font-bold mb-2">No Due Payments</h2>
-          <p className="text-muted-foreground">All members are up to date with their payments!</p>
+        <div className="flex flex-col items-center justify-center min-h-64 border-4 border-primary bg-card p-6">
+          <AlertCircle className="h-12 w-12 sm:h-16 sm:w-16 text-muted-foreground mb-4" />
+          <h2 className="text-xl sm:text-2xl font-bold mb-2">No Due Payments</h2>
+          <p className="text-xs sm:text-sm text-muted-foreground text-center">All members are up to date with their payments!</p>
         </div>
       ) : (
         <>
-          <div className="p-4 border-4 border-destructive bg-destructive/10">
-            <p className="font-medium text-lg">
-              <span className="text-3xl font-bold text-destructive">{duePayments.length}</span>
+          <div className="p-3 sm:p-4 border-4 border-destructive bg-destructive/10">
+            <p className="font-medium text-base sm:text-lg">
+              <span className="text-2xl sm:text-3xl font-bold text-destructive">{duePayments.length}</span>
               {' '} member(s) have overdue payments
             </p>
           </div>

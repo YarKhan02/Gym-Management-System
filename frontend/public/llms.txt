@@ -1,0 +1,9 @@
+# Gym Manager Pro
+
+> Modern gym management system for tracking members, subscriptions, payments, and membership plans.
+
+Gym Manager Pro is an authenticated dashboard application for gym owners and staff to manage members, memberships, subscriptions, and payments. Most routes require sign-in and are not crawlable.
+
+## Pages
+
+- [Home](/): Public landing for the Gym Manager Pro application.

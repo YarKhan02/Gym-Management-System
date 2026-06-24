@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Seo } from '@/components/Seo';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useMember, useUpdateMember } from '@/hooks/useMembers';
 import {
@@ -110,46 +111,49 @@ const MemberProfile = () => {
   });
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-4">
-        <Button variant="outline" onClick={() => navigate('/members')} className="border-2">
+    <div className="space-y-4 sm:space-y-6">
+      <Seo title="Member Profile | Gym Manager Pro" description="View and edit a gym member's profile, subscriptions, and payment history." path="/members" />
+      <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+        <Button variant="outline" onClick={() => navigate('/members')} className="border-2 w-full sm:w-auto">
           <ArrowLeft className="h-4 w-4" />
+          <span className="ml-2 sm:ml-0">Back</span>
         </Button>
-        <div className="flex-1">
-          <h1 className="text-3xl font-bold">{member.full_name}</h1>
-          <p className="text-muted-foreground">Member Profile</p>
+        <div className="flex-1 min-w-0">
+          <h1 className="text-2xl sm:text-3xl font-bold truncate">{member.full_name}</h1>
+          <p className="text-xs sm:text-sm text-muted-foreground">Member Profile</p>
         </div>
-        <Button onClick={() => setIsEditModalOpen(true)} className="gap-2">
+        <Button onClick={() => setIsEditModalOpen(true)} className="gap-2 w-full sm:w-auto text-sm sm:text-base">
           <Edit className="h-4 w-4" />
-          Edit Profile
+          <span className="hidden sm:inline">Edit Profile</span>
+          <span className="sm:hidden">Edit</span>
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         <Card className="border-4 border-primary">
-          <CardHeader>
-            <CardTitle>Member Information</CardTitle>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base sm:text-lg">Member Information</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <div>
-              <p className="text-sm font-medium text-muted-foreground">Phone</p>
-              <p className="font-medium">{member.phone || 'N/A'}</p>
+              <p className="text-xs sm:text-sm font-medium text-muted-foreground">Phone</p>
+              <p className="font-medium text-sm sm:text-base truncate">{member.phone || 'N/A'}</p>
             </div>
             <div>
-              <p className="text-sm font-medium text-muted-foreground">Gender</p>
-              <p className="font-medium">{member.gender || 'N/A'}</p>
+              <p className="text-xs sm:text-sm font-medium text-muted-foreground">Gender</p>
+              <p className="font-medium text-sm sm:text-base">{member.gender || 'N/A'}</p>
             </div>
             <div>
-              <p className="text-sm font-medium text-muted-foreground">Address</p>
-              <p className="font-medium">{member.address || 'N/A'}</p>
+              <p className="text-xs sm:text-sm font-medium text-muted-foreground">Address</p>
+              <p className="font-medium text-sm sm:text-base line-clamp-2">{member.address || 'N/A'}</p>
             </div>
             <div>
-              <p className="text-sm font-medium text-muted-foreground">Join Date</p>
-              <p className="font-medium">{formatDate(member.join_date)}</p>
+              <p className="text-xs sm:text-sm font-medium text-muted-foreground">Join Date</p>
+              <p className="font-medium text-sm sm:text-base">{formatDate(member.join_date)}</p>
             </div>
             <div>
-              <p className="text-sm font-medium text-muted-foreground">Status</p>
-              <Badge variant={member.is_active ? 'default' : 'secondary'}>
+              <p className="text-xs sm:text-sm font-medium text-muted-foreground\">Status</p>
+              <Badge variant={member.is_active ? 'default' : 'secondary'} className="text-xs">
                 {member.is_active ? 'Active' : 'Inactive'}
               </Badge>
             </div>

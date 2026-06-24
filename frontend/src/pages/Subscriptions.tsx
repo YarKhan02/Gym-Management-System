@@ -7,6 +7,7 @@ import { formatDate } from '@/utils/dateHelpers';
 import { useNavigate } from 'react-router-dom';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useState } from 'react';
+import { Seo } from '@/components/Seo';
 
 const Subscriptions = () => {
   const navigate = useNavigate();
@@ -34,14 +35,15 @@ const Subscriptions = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
+      <Seo title="Subscriptions | Gym Manager Pro" description="Track active, expired, and cancelled member subscriptions." path="/subscriptions" />
       <div>
-        <h1 className="text-3xl font-bold mb-2">Subscriptions</h1>
-        <p className="text-muted-foreground">View all member subscriptions</p>
+        <h1 className="text-2xl sm:text-3xl font-bold mb-1 sm:mb-2">Subscriptions</h1>
+        <p className="text-xs sm:text-sm text-muted-foreground">View all member subscriptions</p>
       </div>
 
       <div className="flex items-center gap-4">
-        <div className="w-48">
+        <div className="w-full sm:w-48">
           <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger className="border-2">
               <SelectValue />

@@ -37,13 +37,13 @@ export function DataTable<T extends Record<string, any>>({
   const currentData = data.slice(startIndex, endIndex);
 
   return (
-    <div className="space-y-4">
-      <div className="border-4 border-primary">
-        <Table>
+    <div className="space-y-3 sm:space-y-4">
+      <div className="border-4 border-primary overflow-x-auto">
+        <Table className="text-xs sm:text-sm">
           <TableHeader>
             <TableRow className="border-b-4 border-primary hover:bg-transparent">
               {columns.map((column) => (
-                <TableHead key={column.key} className="font-bold text-foreground">
+                <TableHead key={column.key} className="font-bold text-foreground whitespace-nowrap p-2 sm:p-4">
                   {column.label}
                 </TableHead>
               ))}
@@ -57,7 +57,7 @@ export function DataTable<T extends Record<string, any>>({
                 className={`border-b-2 border-border ${onRowClick ? 'cursor-pointer hover:bg-accent' : ''}`}
               >
                 {columns.map((column) => (
-                  <TableCell key={column.key}>
+                  <TableCell key={column.key} className="p-2 sm:p-4">
                     {column.render ? column.render(item) : item[column.key]}
                   </TableCell>
                 ))}
@@ -68,29 +68,29 @@ export function DataTable<T extends Record<string, any>>({
       </div>
 
       {totalPages > 1 && (
-        <div className="flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs sm:text-sm">
+          <p className="text-muted-foreground">
             Showing {startIndex + 1} to {Math.min(endIndex, data.length)} of {data.length} entries
           </p>
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2 justify-center">
             <Button
               variant="outline"
               size="sm"
               onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
               disabled={currentPage === 1}
-              className="border-2"
+              className="border-2 p-2"
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
-            <span className="flex items-center px-4 font-medium">
-              Page {currentPage} of {totalPages}
+            <span className="font-medium text-xs sm:text-sm px-2">
+              {currentPage} / {totalPages}
             </span>
             <Button
               variant="outline"
               size="sm"
               onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
-              className="border-2"
+              className="border-2 p-2"
             >
               <ChevronRight className="h-4 w-4" />
             </Button>

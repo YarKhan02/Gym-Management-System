@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Seo } from '@/components/Seo';
 import { useNavigate } from 'react-router-dom';
 import { useMembers, useCreateMember, useDeleteMember } from '@/hooks/useMembers';
 import { DataTable } from '@/components/ui/DataTable';
@@ -55,26 +56,27 @@ const Members = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-6">
+      <Seo title="Members | Gym Manager Pro" description="Manage gym members — view, add, edit, and remove member records." path="/members" />
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Members</h1>
-          <p className="text-muted-foreground">Manage your gym members</p>
+          <h1 className="text-2xl sm:text-3xl font-bold mb-1 sm:mb-2">Members</h1>
+          <p className="text-xs sm:text-sm text-muted-foreground">Manage your gym members</p>
         </div>
-        <Button onClick={() => setIsModalOpen(true)} className="gap-2">
+        <Button onClick={() => setIsModalOpen(true)} className="gap-2 w-full sm:w-auto">
           <Plus className="h-4 w-4" />
           Add Member
         </Button>
       </div>
 
       <div className="flex items-center gap-4">
-        <div className="relative flex-1 max-w-md">
+        <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search by name, phone, or email..."
+            placeholder="Search by name, phone..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 border-2"
+            className="pl-10 border-2 text-sm"
           />
         </div>
       </div>
@@ -116,7 +118,7 @@ const Members = () => {
                   e.stopPropagation();
                   setMemberToDelete(member.id);
                 }}
-                className="gap-1"
+                className="gap-1 text-xs"
               >
                 <Trash2 className="h-3 w-3" />
                 Delete
