@@ -5,6 +5,7 @@ import { Users, UserCheck, UserX, Wallet, AlertCircle } from 'lucide-react';
 import { formatDate } from '@/utils/dateHelpers';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
+import { Seo } from '@/components/Seo';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -17,13 +18,14 @@ const Dashboard = () => {
   const { stats, expiring_subscriptions, recent_payments } = dashboardData;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6 w-full overflow-x-hidden">
+      <Seo title="Dashboard | Gym Manager Pro" description="Overview of members, subscriptions, payments, and gym performance." path="/" />
       <div>
-        <h1 className="text-3xl font-bold mb-2">Dashboard</h1>
-        <p className="text-muted-foreground">Overview of your gym management</p>
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-1 sm:mb-2">Dashboard</h1>
+        <p className="text-xs sm:text-sm text-muted-foreground">Overview of your gym management</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
         <StatCard
           title="Total Members"
           value={stats.total_members}
@@ -50,12 +52,13 @@ const Dashboard = () => {
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         <div>
-          <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-            <AlertCircle className="h-5 w-5" />
-            Expiring Soon (Next 7 Days)
+          <h2 className="text-base sm:text-lg md:text-xl font-bold mb-3 sm:mb-4 flex items-center gap-2">
+            <AlertCircle className="h-5 w-5 flex-shrink-0" />
+            <span className="truncate">Expiring Soon (Next 7 Days)</span>
           </h2>
+          <div className="overflow-x-auto">
           <DataTable
             data={expiring_subscriptions}
             columns={[
@@ -75,7 +78,7 @@ const Dashboard = () => {
                 render: (item) => (
                   <div className="flex items-center gap-2">
                     <span>{formatDate(item.end_date)}</span>
-                    <Badge variant="destructive">
+                    <Badge variant="destructive" className="text-xs">
                       {item.days_until_expiry}d left
                     </Badge>
                   </div>
@@ -85,13 +88,15 @@ const Dashboard = () => {
             onRowClick={(item) => navigate(`/members/${item.member_id}`)}
             itemsPerPage={5}
           />
+          </div>
         </div>
 
         <div>
-          <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-            <Wallet className="h-5 w-5" />
-            Recent Payments
+          <h2 className="text-base sm:text-lg md:text-xl font-bold mb-3 sm:mb-4 flex items-center gap-2">
+            <Wallet className="h-5 w-5 flex-shrink-0" />
+            <span className="truncate">Recent Payments</span>
           </h2>
+          <div className="overflow-x-auto">
           <DataTable
             data={recent_payments}
             columns={[
@@ -117,6 +122,7 @@ const Dashboard = () => {
             ]}
             itemsPerPage={5}
           />
+          </div>
         </div>
       </div>
     </div>

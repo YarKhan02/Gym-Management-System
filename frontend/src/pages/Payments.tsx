@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Seo } from '@/components/Seo';
 import { usePayments, useCreatePayment } from '@/hooks/usePayments';
 import { useMembers } from '@/hooks/useMembers';
 import { DataTable } from '@/components/ui/DataTable';
@@ -65,16 +66,18 @@ const Payments = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-6">
+      <Seo title="Payments | Gym Manager Pro" description="Record and review gym member payments and transaction history." path="/payments" />
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Payments</h1>
-          <p className="text-muted-foreground">Record and manage all payments</p>
+          <h1 className="text-2xl sm:text-3xl font-bold mb-1 sm:mb-2">Payments</h1>
+          <p className="text-xs sm:text-sm text-muted-foreground">Record and manage all payments</p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={handleExportCSV} className="gap-2 border-2">
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+          <Button variant="outline" onClick={handleExportCSV} className="gap-2 border-2 w-full sm:w-auto text-sm">
             <Download className="h-4 w-4" />
-            Export CSV
+            <span className="hidden sm:inline">Export CSV</span>
+            <span className="sm:hidden">Export</span>
           </Button>
         </div>
       </div>

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Seo } from '@/components/Seo';
 import { useMemberships, useCreateMembership, useUpdateMembership, useDeleteMembership } from '@/hooks/useMemberships';
 import { DataTable } from '@/components/ui/DataTable';
 import { Button } from '@/components/ui/button';
@@ -70,11 +71,12 @@ const Memberships = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-6">
+      <Seo title="Memberships | Gym Manager Pro" description="Manage membership plans, pricing, and durations for your gym." path="/memberships" />
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Membership Plans</h1>
-          <p className="text-muted-foreground">Manage your gym membership plans</p>
+          <h1 className="text-2xl sm:text-3xl font-bold mb-1 sm:mb-2">Membership Plans</h1>
+          <p className="text-xs sm:text-sm text-muted-foreground">Manage your gym membership plans</p>
         </div>
         <Button onClick={() => setIsModalOpen(true)} className="gap-2">
           <Plus className="h-4 w-4" />
