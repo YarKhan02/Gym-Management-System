@@ -6,13 +6,30 @@ import { formatDate } from '@/utils/dateHelpers';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
 import { Seo } from '@/components/Seo';
+import { PageHeaderSkeleton, StatGridSkeleton, TableSkeleton } from '@/components/ui/PageSkeleton';
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { data: dashboardData, isLoading } = useDashboard();
 
   if (isLoading || !dashboardData) {
-    return <div className="flex items-center justify-center h-64">Loading...</div>;
+    return (
+      <div className="space-y-4 sm:space-y-6 w-full overflow-x-hidden">
+        <Seo title="Dashboard | Gym Manager Pro" description="Overview of members, subscriptions, payments, and gym performance." path="/" />
+        <PageHeaderSkeleton />
+        <StatGridSkeleton />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+          <div className="space-y-3 sm:space-y-4">
+            <div className="h-7 w-64 animate-pulse rounded-md bg-muted" />
+            <TableSkeleton columns={3} rows={5} />
+          </div>
+          <div className="space-y-3 sm:space-y-4">
+            <div className="h-7 w-48 animate-pulse rounded-md bg-muted" />
+            <TableSkeleton columns={4} rows={5} />
+          </div>
+        </div>
+      </div>
+    );
   }
 
   const { stats, expiring_subscriptions, recent_payments } = dashboardData;

@@ -10,6 +10,7 @@ import { PaymentForm } from '@/components/forms/PaymentForm';
 import { AlertCircle, Wallet } from 'lucide-react';
 import { formatDate } from '@/utils/dateHelpers';
 import { Payment } from '@/interfaces/Payment';
+import { PageHeaderSkeleton, TableSkeleton } from '@/components/ui/PageSkeleton';
 
 const DuePayments = () => {
   const navigate = useNavigate();
@@ -34,7 +35,16 @@ const DuePayments = () => {
   };
 
   if (isLoading) {
-    return <div className="flex items-center justify-center h-64">Loading...</div>;
+    return (
+      <div className="space-y-4 sm:space-y-6">
+        <Seo title="Due Payments | Gym Manager Pro" description="Review outstanding member payments and mark dues as paid." path="/due-payments" />
+        <PageHeaderSkeleton />
+        <div className="p-3 sm:p-4 border-4 border-destructive bg-destructive/10">
+          <div className="h-8 w-72 max-w-full animate-pulse rounded-md bg-muted" />
+        </div>
+        <TableSkeleton columns={6} />
+      </div>
+    );
   }
 
   return (

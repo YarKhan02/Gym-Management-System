@@ -7,6 +7,7 @@ import { Modal } from '@/components/ui/Modal';
 import { MembershipForm } from '@/components/forms/MembershipForm';
 import { Plus, Edit, Trash2 } from 'lucide-react';
 import { Membership } from '@/interfaces/Membership';
+import { PageHeaderSkeleton, TableSkeleton } from '@/components/ui/PageSkeleton';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -67,7 +68,13 @@ const Memberships = () => {
   };
 
   if (isLoading) {
-    return <div className="flex items-center justify-center h-64">Loading...</div>;
+    return (
+      <div className="space-y-4 sm:space-y-6">
+        <Seo title="Memberships | Gym Manager Pro" description="Manage membership plans, pricing, and durations for your gym." path="/memberships" />
+        <PageHeaderSkeleton action />
+        <TableSkeleton columns={4} />
+      </div>
+    );
   }
 
   return (

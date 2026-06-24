@@ -17,6 +17,8 @@ import DuePayments from "./pages/DuePayments";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import Register from "./pages/Register";
+import LandingPage from "./pages/LandingPage";
+import AnalyticsPage from "./pages/AnalyticsPage";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +30,7 @@ const App = () => (
       <AuthProvider>
         <BrowserRouter>
           <Routes>
+            <Route path="/" element={<LandingPage />} />
             <Route element={<PublicOnlyRoute />}>
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
@@ -35,13 +38,14 @@ const App = () => (
 
             <Route element={<ProtectedRoute />}>
               <Route element={<MainLayout />}>
-                <Route path="/" element={<Dashboard />} />
+                <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/members" element={<Members />} />
                 <Route path="/members/:id" element={<MemberProfile />} />
                 <Route path="/memberships" element={<Memberships />} />
                 <Route path="/subscriptions" element={<Subscriptions />} />
                 <Route path="/payments" element={<Payments />} />
                 <Route path="/due-payments" element={<DuePayments />} />
+                <Route path="/analytics" element={<AnalyticsPage />} />
               </Route>
             </Route>
 

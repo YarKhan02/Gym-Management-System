@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useState } from 'react';
 import { Seo } from '@/components/Seo';
+import { PageHeaderSkeleton, TableSkeleton, ToolbarSkeleton } from '@/components/ui/PageSkeleton';
 
 const Subscriptions = () => {
   const navigate = useNavigate();
@@ -31,7 +32,14 @@ const Subscriptions = () => {
   });
 
   if (isLoading) {
-    return <div className="flex items-center justify-center h-64">Loading...</div>;
+    return (
+      <div className="space-y-4 sm:space-y-6">
+        <Seo title="Subscriptions | Gym Manager Pro" description="Track active, expired, and cancelled member subscriptions." path="/subscriptions" />
+        <PageHeaderSkeleton />
+        <ToolbarSkeleton />
+        <TableSkeleton columns={5} />
+      </div>
+    );
   }
 
   return (

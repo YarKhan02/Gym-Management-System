@@ -11,6 +11,7 @@ import { Plus, Search, Trash2 } from 'lucide-react';
 import { formatDate } from '@/utils/dateHelpers';
 import { Badge } from '@/components/ui/badge';
 import { Member } from '@/interfaces/Member';
+import { PageHeaderSkeleton, TableSkeleton, ToolbarSkeleton } from '@/components/ui/PageSkeleton';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -52,7 +53,14 @@ const Members = () => {
   };
 
   if (isLoading) {
-    return <div className="flex items-center justify-center h-64">Loading...</div>;
+    return (
+      <div className="space-y-4 sm:space-y-6">
+        <Seo title="Members | Gym Manager Pro" description="Manage gym members — view, add, edit, and remove member records." path="/members" />
+        <PageHeaderSkeleton action />
+        <ToolbarSkeleton />
+        <TableSkeleton columns={5} />
+      </div>
+    );
   }
 
   return (
