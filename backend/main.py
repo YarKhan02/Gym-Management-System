@@ -7,13 +7,14 @@ from app.routers.membership_router import membership_router
 from app.routers.subscription_router import subscription_router
 from app.routers.payment_router import payment_router
 from app.routers.dashboard_router import dashboard_router
+from app.utils.config import settings
 
 
 def create_app():
     app = Flask(__name__)
     
     CORS(app, 
-         origins=["http://localhost:4567"],
+         origins=["http://gym.shoukan-labs.com"],
          supports_credentials=True,
          allow_headers=["Content-Type", "Authorization", "X-Client-ID"],
          methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
@@ -33,4 +34,4 @@ def create_app():
 
 if __name__ == "__main__":
     app = create_app()
-    app.run(debug=True, host="0.0.0.0", port=8000)
+    app.run(debug=True, host="0.0.0.0", port=settings.PORT)
