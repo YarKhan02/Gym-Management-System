@@ -25,7 +25,7 @@ const Login = () => {
 
     try {
       await login({ email, password });
-      const nextPath = (location.state as { from?: { pathname?: string } })?.from?.pathname || '/dashboard';
+      const nextPath = (location.state as { from?: { pathname?: string } })?.from?.pathname || '/';
       toast({ title: 'Welcome back', description: 'You are now signed in.' });
       navigate(nextPath, { replace: true });
     } catch (error) {
